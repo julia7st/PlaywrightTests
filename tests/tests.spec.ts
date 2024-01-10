@@ -5,6 +5,11 @@ import { NavBar } from "../page-object/NavBar";
 import { ButtonPage } from "../page-object/ButtonPage";
 import { InputPage } from "../page-object/InputPage";
 import { ElementsPage } from "../page-object/ElementsPage";
+import { RadioPage } from "../page-object/RadioPage";
+import { DropPage } from "../page-object/DropPage";
+import { LoginPage } from "../page-object/LoginPage";
+import { SignUpPage } from "../page-object/SignUpPage";
+import { sign } from "crypto";
 
 //Test1
 test("Fill in the FullName field with valid data", async ({ page }) => {
@@ -79,4 +84,150 @@ test("Select the specific element from drop-down list", async ({ page }) => {
   const dropdownSelector = "select#fruits";
 
   await page.selectOption(dropdownSelector, "Apple");
+});
+
+//Test1 for HW10
+test("Verify if Enter button is in Disabled state", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const navBar = new NavBar(page);
+  const inputPage = new InputPage(page);
+  const workSpacePage = new WorkSpacePage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getInputPage.click();
+  expect(await page.isDisabled("xpath=//input[@id='noEdit']")).toBe(true);
+});
+
+//Test2 for HW10
+test("Uncheck checkbox on Radio page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const navBar = new NavBar(page);
+  const radioPage = new RadioPage(page);
+  const workSpacePage = new WorkSpacePage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getRadioPage.click();
+
+  await page.waitForSelector(
+    "input:below(:text('Find if the checkbox is selected'))"
+  );
+  const checkBox = await page.$(
+    "input:below(:text('Find if the checkbox is selected'))"
+  );
+
+  if (checkBox) {
+    expect(await checkBox.isChecked()).toBe(true);
+    await checkBox.uncheck();
+  } else {
+    throw new Error("An error occured");
+  }
+});
+
+//Test3 for HW10
+test("Verify url for Radio page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const navBar = new NavBar(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getRadioPage.click();
+  expect(page.url()).toBe("https://letcode.in/radio");
+});
+
+//Test4 for HW10
+test("Verify url for Drop page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const navBar = new NavBar(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getDropPage.click();
+  expect(page.url()).toBe("https://letcode.in/dropable");
+});
+
+//Test5 for HW10
+test("Navigate to Tutorial page from Radio page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const navBar = new NavBar(page);
+  const radioPage = new RadioPage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getRadioPage.click();
+  await radioPage.getWatchTutorialBtn.click();
+  expect(page.url()).toBe("https://letcode.in/video/radio");
+});
+
+//Test6 for HW10
+test("Verify fields on Log in page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const loginPage = new LoginPage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await homePage.getLoginBtn.click();
+  await expect(loginPage.getEmailField).toBeVisible;
+  await expect(loginPage.getPasswordField).toBeVisible;
+  await expect(loginPage.getForgottenPasswordBtn).toBeVisible;
+});
+
+//Test7 for HW10
+test("Verify fields on Sign up page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const signUpPage = new SignUpPage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await homePage.getSignUpBtn.click();
+  await expect(signUpPage.getNameField).toBeVisible;
+  await expect(signUpPage.getEmailField).toBeVisible;
+  await expect(signUpPage.getAgreeField).toBeVisible;
+  await expect(signUpPage.getSignUpField).toBeVisible;
+});
+
+//Test8 for HW10
+test("Perform drag and drop", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const navBar = new NavBar(page);
+  const dropPage = new DropPage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getDropPage.click();
+  await expect(dropPage.getWatchTutorialBtn).toBeVisible;
+
+  const src = await page.$("#draggable");
+  const trg = await page.$("#droppable");
+  if (src && trg) {
+    const srcBound = await src.boundingBox();
+    const trgBound = await trg.boundingBox();
+    if (srcBound && trgBound) {
+      await page.mouse.move(
+        srcBound.x + srcBound.width / 3,
+        srcBound.y + srcBound.height / 2
+      );
+      await page.mouse.down();
+      await page.mouse.move(
+        trgBound.x + trgBound.width / 3,
+        trgBound.y + trgBound.height / 2
+      );
+      await page.mouse.down();
+    } else {
+      throw new Error("An error occured: no element found");
+    }
+  }
 });
