@@ -9,6 +9,7 @@ export class WorkSpacePage {
   readonly getDropDownPage: Locator;
   readonly getRadioPage: Locator;
   readonly getDropPage: Locator;
+  readonly getAlertPage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -25,5 +26,6 @@ export class WorkSpacePage {
     );
     this.getRadioPage = page.locator("xpath=//a[contains(text(),'Toggle')]");
     this.getDropPage = page.locator("xpath=//a[contains(text(),'AUI - 2')]");
+    this.getAlertPage = page.locator("xpath=//a[contains(text(),'Dialog')]");
   }
 }
