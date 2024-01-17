@@ -245,24 +245,7 @@ test("Verify the url for Alerts page", async ({ page }) => {
   expect(page.url()).toBe("https://letcode.in/alert");
 });
 
-//Test2 for HW11,
-test("Verify buttons on Alerts page", async ({ page }) => {
-  const homePage = new HomePage(page);
-  const workSpacePage = new WorkSpacePage(page);
-  const navBar = new NavBar(page);
-  const alertsPage = new AlertsPage(page);
-
-  await homePage.goto();
-  await homePage.getDoNotConsentBtn.click();
-  await navBar.getWorkSpacePage.click();
-  await workSpacePage.getAlertPage.click();
-  await expect(alertsPage.getSimpleBtn).toBeVisible;
-  await expect(alertsPage.getConfirmBtn).toBeVisible;
-  await expect(alertsPage.getPromptBtn).toBeVisible;
-  await expect(alertsPage.getModernBtn).toBeVisible;
-});
-
-//Test3 for HW11
+//Test2 for HW11
 test("Verify Prompt Alert button ", async ({ page }) => {
   const homePage = new HomePage(page);
   const workSpacePage = new WorkSpacePage(page);
@@ -282,4 +265,21 @@ test("Verify Prompt Alert button ", async ({ page }) => {
   });
   await element?.click();
   expect(alertsPage.getMyName).toBeVisible;
+});
+
+//Test3 for HW11,
+test("Verify buttons on Alerts page", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const workSpacePage = new WorkSpacePage(page);
+  const navBar = new NavBar(page);
+  const alertsPage = new AlertsPage(page);
+
+  await homePage.goto();
+  await homePage.getDoNotConsentBtn.click();
+  await navBar.getWorkSpacePage.click();
+  await workSpacePage.getAlertPage.click();
+  await expect(alertsPage.getSimpleBtn).toBeVisible;
+  await expect(alertsPage.getConfirmBtn).toBeVisible;
+  await expect(alertsPage.getPromptBtn).toBeVisible;
+  await expect(alertsPage.getModernBtn).toBeVisible;
 });
